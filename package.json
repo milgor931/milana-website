@@ -17,6 +17,7 @@
     "preact": "^10.26.8"
   },
   "devDependencies": {
-    "astro": "^5.12.3"
+    "astro": "^5.12.3",
+    "gh-pages": "^6.3.0"
   }
 }
