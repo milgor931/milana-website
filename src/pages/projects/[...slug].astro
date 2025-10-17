@@ -1,0 +1,359 @@
+---
+// src/pages/projects/[...slug].astro
+import { getCollection } from 'astro:content';
+import ProjectLayout from '../../layouts/ProjectLayout.astro'; // Updated to use ProjectLayout
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: project,
+  }));
+}
+
+const project = Astro.props;
+const { Content } = await project.render();
+
+const {
+  title,
+  subtitle,
+  description,
+  image,
+  imageAlt,
+  video,
+  publishDate,
+  year,
+  tags,
+  keywords
+} = project.data;
+
+// Debug: Log what we're getting from the project data
+console.log('Project data received:', {
+  title,
+  subtitle,
+  description,
+  image,
+  imageAlt,
+  video,
+  publishDate,
+  year,
+  tags,
+  keywords
+});
+
+// Generate keywords from tags if keywords not provided
+const projectKeywords = keywords || (tags ? tags.join(', ') : '');
+
+// Create image alt text if not provided
+const projectImageAlt = imageAlt || `${title} project by Memo Akten and Katie Peyton Hofstadter`;
+
+// Convert publishDate to ISO string if it exists
+const publishedTime = publishDate ? publishDate.toISOString() : undefined;
+
+// Use the project's image, or fall back to a default
+const projectImage = image || '/images/superradiance.jpg';
+
+console.log('Final values being passed to layout:', {
+  title,
+  subtitle,
+  description,
+  image: projectImage,
+  imageAlt: projectImageAlt,
+  keywords: projectKeywords,
+  publishedTime
+});
+---
+
+<ProjectLayout
+  title={title}
+  subtitle={subtitle}
+  description={description}
+  image={projectImage}
+  imageAlt={projectImageAlt}
+  keywords={`${projectKeywords}, Memo Akten, Katie Peyton Hofstadter, Superradiance Lab`}
+  publishedTime={publishedTime}
+>
+  <main class="project-detail">
+    <div class="container">
+      <!-- Back Navigation -->
+      <nav class="back-nav">
+        <a href="/projects" class="back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+          </svg>
+          Back to Projects
+        </a>
+      </nav>
+
+      <!-- Project Header -->
+      <header class="project-header">
+        <div class="header-content">
+          <h1 class="project-title">{title} | {year} </h1>
+
+          {subtitle && <p>{subtitle}</p>}
+
+          <br />
+
+          {tags && tags.length > 0 && (
+            <div class="tags">
+              {tags.map(tag => (
+                <a href={`/projects#${encodeURIComponent(tag)}`} class="tag tag-link">{tag}</a>
+              ))}
+            </div>
+          )}
+        </div>
+
+      </header>
+      
+      <!-- Project Content -->
+      <section class="project-content">
+        <div class="content-wrapper">
+          <Content />
+        </div>
+      </section>
+
+      <!-- Project Links COMMENTED OUT FOR LATER -->
+      <!-- 
+      {(webpageLink || (customLinks && customLinks.length > 0)) && (
+        <section class="project-links">
+          <h2 class="links-title">Project Links</h2>
+          <div class="links-grid">
+            {webpageLink && (
+              <a href={webpageLink} target="_blank" rel="noopener noreferrer" class="project-link primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                Visit Project
+              </a>
+            )}
+            
+            {customLinks && customLinks.map((link, index) => (
+              <a 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="project-link"
+                key={index}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15,3 21,3 21,9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                {link.title}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+      -->
+    </div>
+  </main>
+</ProjectLayout>
+
+<style>
+  .project-detail {
+    padding: 2rem 0 4rem;
+    min-height: 100vh;
+    margin-top: 5rem;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .back-nav {
+    margin-bottom: 2rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: #1e293b;
+  }
+
+  .project-header {
+    margin-bottom: 3rem;
+  }
+
+  .header-content {
+    margin-bottom: 2rem;
+  }
+
+  .project-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+  }
+
+  .project-year {
+    letter-spacing: 4px;
+    font-weight: 400;
+    font-size: 1.5em;
+    margin: 0 0 1rem 0;
+  }
+
+  .project-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: "Roboto Flex", sans-serif;
+  }
+
+  .tag-link {
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .tag-link:hover {
+    background: #cbd5e1;
+    color: #334155;
+    transform: translateY(-1px);
+  }
+
+  .tag-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .tag-link:hover::after {
+    box-shadow: 0 0 0 2px rgba(71, 85, 105, 0.2);
+  }
+
+  .publish-date {
+    font-size: 0.875rem;
+  }
+
+  .project-media {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .media-element {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .placeholder-media {
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    height: 300px;
+  }
+
+  .project-links {
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  .links-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 1rem 0;
+  }
+
+  .links-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: white;
+    color: #475569;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .project-link:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .project-link.primary {
+    background: #1e293b;
+    color: white;
+  }
+
+  .project-link.primary:hover {
+    background: #334155;
+  }
+
+  .project-content {
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .project-detail {
+      padding: 2rem 2rem;
+      margin-top: 2rem;
+    }
+
+    .container {
+      padding: 5vh 1rem;
+    }
+
+    .project-title {
+      font-size: 2rem;
+    }
+
+    .project-description {
+      font-size: 1.125rem;
+    }
+
+    .links-grid {
+      flex-direction: column;
+    }
+
+    .project-link {
+      justify-content: center;
+    }
+  }
+</style>

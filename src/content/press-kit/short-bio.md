@@ -1,0 +1,1 @@
+Milana Aernova (she/her) is an interdisciplinary artist blending dance and technology to explore humanity’s evolving relationship with the modern world and universe. With a foundation in diverse movement styles and a background in computer science, she creates art integrating technology and performance, striving to challenge and expand how audiences experience movement and art.

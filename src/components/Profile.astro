@@ -1,0 +1,78 @@
+---
+interface Props {
+  bios: {
+    name: string;
+    image: string;
+    bioLink: string;
+    website?: string;
+    twitter?: string;
+    instagram?: string;
+    bluesky?: string;
+  }[];
+}
+
+const { bios } = Astro.props;
+---
+
+<div class="columns-container">
+  {bios.map((bio) => (
+    <div class="column">
+      <h3>{bio.name}</h3>
+      <img class="profile-image" src={bio.image} alt={`${bio.name} profile image`} />
+      <ul>
+        
+        {bio.website && <li>Website: <a href={'https://' + bio.website} target="_blank">{bio.website.replace('www.', '')}</a> /  
+          {bio.bioLink && <a href={'https://' + bio.bioLink} target="_blank">(bio)</a>}
+        
+        </li>}
+        {bio.twitter && <li>X/Twitter: <a href={'https://' + bio.twitter} target="_blank">{bio.twitter.split('/').pop()}</a></li>}
+        {bio.instagram && <li>Instagram: <a href={'https://' + bio.instagram} target="_blank">{bio.instagram.split('/').pop()}</a></li>}
+        {bio.bluesky && <li>Bluesky: <a href={'https://' + bio.bluesky} target="_blank">{bio.bluesky.split('/').pop()}</a></li>}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .columns-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2em;
+  }
+
+  .column {
+    flex: 1;
+    min-width: 0; /* Prevents flex items from overflowing */
+  }
+
+  .profile-image {
+    width: 14rem;
+    height: auto;
+  }
+
+  .column h3 {
+    margin-top: 0;
+  }
+
+  .column ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.9em;
+  }
+
+  .column li a {
+    font-weight: 400;
+  }
+
+  @media (max-width: 768px) {
+    .columns-container {
+      flex-direction: column;
+    }
+    
+    .column {
+      width: 100%;
+    }
+  }
+</style> 

@@ -1,0 +1,87 @@
+<script>
+    // Highlight the currently visible section in the navbar
+    // make sections with <section id="..." />
+    document.addEventListener("DOMContentLoaded", () => {
+        const navOffset = 50; // amount of pixels to offset the navbar from the top of the section
+        const visibleThresh = 200; // if section is in top visibleThresh pixels, consider it active
+        const siteTitle = document.title; // default title for hte site
+
+        const sections = Array.from(document.querySelectorAll("section[id]"));
+        const navLinks = document.querySelectorAll("#navbar a");
+
+        let lastHash = "";
+
+        // get the section titles
+        const sectionTitles = {};
+        sections.forEach(section => {
+            sectionTitles[section.id] = section.dataset.title;
+        });
+
+
+        function onScroll() {
+            let current = sections[0].id;
+
+            // check if the section is visible
+            for (const section of sections) {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= visibleThresh) {
+                    current = section.id;
+                }
+            }
+
+            // update the url hash without reloading the page
+            if (current !== lastHash) {
+                if(lastHash !== "") history.replaceState(null, "", current === "top" ? window.location.pathname : `#${current}`);
+                lastHash = current;
+                const t = sectionTitles[current]
+                document.title = t ? `${sectionTitles[current]} | ${siteTitle}` : siteTitle;
+                console.log('Updating hash and title to:', document.title);
+            }
+
+            // // update the page title
+            // const newTitle = sectionTitles[current];
+            // if (document.title !== newTitle) {
+            //     document.title = newTitle;
+            // }
+
+            // highlight the active section in the navbar
+            navLinks.forEach((link) => {
+                link.classList.toggle("active", link.dataset.target === current);
+            });
+        }
+
+        // make the nav links scroll to the section with offset
+        navLinks.forEach((link) => {
+            link.addEventListener("click", (e) => {
+                const targetId = link.dataset.target;
+                const section = document.getElementById(targetId);
+                if (section) {
+                    e.preventDefault();
+                    let urlHash = "";
+                    let scrollToY = section.getBoundingClientRect().top + window.scrollY;
+                    if (targetId === "top") {   // special treatment for 'top' link
+                        scrollToY = 0;
+                        urlHash = window.location.pathname
+                    } else {
+                        scrollToY -= navOffset;
+                        urlHash = `#${targetId}`
+                    }
+                    // scroll to the section with offset
+                    window.scrollTo({ top: scrollToY, behavior: "smooth" });
+
+                    history.replaceState(null, "", urlHash);
+                }
+            });
+        });
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll(); // Run on load
+    });
+
+    // make the 'Home' nav (Which targets 'top') go to the top without reloading the page or adding # to the url
+    // document.querySelector('#navbar a[data-target="top"]')?.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     window.scrollTo({ top: 0, behavior: "smooth" });
+    //     history.pushState("", document.title, window.location.pathname);
+    // });
+</script>

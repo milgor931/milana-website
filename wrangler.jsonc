@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "superradiance-lab",
+  "compatibility_date": "2025-08-13",
+  "assets": {
+    "directory": "./dist",
+  }
+}

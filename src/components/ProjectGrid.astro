@@ -1,0 +1,107 @@
+---
+// src/pages/projects/index.astro
+import { getCollection } from 'astro:content';
+import ProjectCard from './ProjectCard.astro';
+
+const projects = await getCollection('projects');
+
+// Sort projects by date (newest first) or featured status
+const sortedProjects = projects.filter(p => p.data.featured).sort((a, b) => {
+  // Featured projects first
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  
+  // Then by date if available
+  if (a.data.publishDate && b.data.publishDate) {
+    return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+  }
+  
+  // Finally by title
+  return a.data.title.localeCompare(b.data.title);
+});
+---
+
+<div class="projects-grid">
+  {sortedProjects.map((project) => (
+    <ProjectCard
+      title={project.data.title}
+      subtitle={project.data.subtitle}
+      description={project.data.description}
+      image={project.data.image}
+      video={project.data.video}
+      slug={project.slug}
+      year={project.data.year}
+    />
+  ))}
+</div>
+
+{projects.length === 0 && (
+    <div class="empty-state">
+      <p>No projects found. Check back soon!</p>
+    </div>
+)}
+
+<style>
+  .projects-page {
+    padding: 2rem 0 4rem;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: red;
+    margin: 0 0 1rem 0;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+    font-size: 1.125rem;
+  }
+
+  @media (max-width: 768px) {
+    .projects-page {
+      padding: 1rem 0 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .page-description {
+      font-size: 1rem;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .container {
+      padding: 0 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

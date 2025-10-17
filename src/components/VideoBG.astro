@@ -1,0 +1,53 @@
+---
+const { videoId } = Astro.props;
+---
+<style>
+#video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+    transition: opacity 0.5s ease;
+}
+
+#video-background video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 aspect ratio */
+    min-height: 100vh;
+    min-width: 177.77vh; /* 16:9 aspect ratio */
+    transform: translate(-50%, -50%);
+    filter: invert(1);
+}
+
+/* Only invert the video in dark mode */
+html.dark #video-background video {
+filter: invert(0);
+}
+</style>
+
+<div id="video-background">
+<!---
+    <iframe src={`https://player.vimeo.com/video/${videoId}?background=1&controls=0&autoplay=1&loop=1&autopause=0&muted=1`} frameborder="0"
+        allow="autoplay; fullscreen" allowfullscreen>
+    </iframe>
+    --->
+
+    <video src="/images/SOUNDBODY VISUAL RECORDING 3 - x264 18Q.mp4"></video>
+    
+<div id="video-background">
+  <video 
+    src="/images/video.mp4"
+    autoplay
+    muted
+    loop
+    playsinline
+  ></video>
+</div>
+</div>
+

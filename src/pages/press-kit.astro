@@ -1,0 +1,390 @@
+---
+// pages/press-kit.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Import markdown content
+const shortBio = await Astro.glob('../content/press-kit/short-bio.md');
+const longBio = await Astro.glob('../content/press-kit/long-bio.md');
+const artistStatement = await Astro.glob('../content/press-kit/artist-statement.md');
+
+const ShortBioContent = shortBio[0]?.Content;
+const LongBioContent = longBio[0]?.Content;
+const ArtistStatementContent = artistStatement[0]?.Content;
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Press Kit - Milana Aernova</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+<BaseLayout>
+    <main class="press-kit">
+        <div class="container">
+            <h1 class="page-title">Press Kit</h1>
+            
+            <!-- Photo Section -->
+            <section class="photos-section">
+                <h2>Photography</h2>
+                <div class="photo-grid">
+                    <div class="photo-card">
+                        <img 
+                            src="/images/MilanaHeadshot.jpg" 
+                            alt="Milana Aernova Headshot" 
+                            class="press-photo"
+                        />
+                        <a href="/images/MilanaHeadshot.jpg" download class="download-btn">Download High-Res</a>
+                        <p class="credit-line">Photo credit: <a href="https://sanchezproductions.mypixieset.com/" target="_blank">Sanchez Productions</a></p>
+                    </div>
+                    <div class="photo-card">
+                       <div class="photo-card">
+                        <img 
+                            src="/images/Space_Rising_04856_By Hana Tobias.jpg" 
+                            alt="Milana Aernova Movement Shot" 
+                            class="press-photo"
+                        />
+                        <a href="/images/Space_Rising_04856_By Hana Tobias.jpg" download class="download-btn">Download High-Res</a>
+                        <p class="credit-line">Photo credit: <a href="https://www.hanatobias.com/" target="_blank">Hana Tobias</a></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Short Bio Section -->
+            <section class="bio-section" id="short-bio">
+                <h2>Short Bio</h2>
+                <div class="bio-content prose">
+                    {ShortBioContent ? <ShortBioContent /> : <p>Create a file at <code>src/content/press-kit/short-bio.md</code> with your short bio.</p>}
+                </div>
+                <button class="copy-btn" data-section="short-bio">Copy to Clipboard</button>
+            </section>
+
+            <!-- Long Bio Section -->
+            <section class="bio-section" id="long-bio">
+                <h2>Long Bio</h2>
+                <div class="bio-content prose">
+                    {LongBioContent ? <LongBioContent /> : <p>Create a file at <code>src/content/press-kit/long-bio.md</code> with your long bio.</p>}
+                </div>
+                <button class="copy-btn" data-section="long-bio">Copy to Clipboard</button>
+            </section>
+
+            <!-- Artist Statement Section -->
+            <section class="bio-section" id="artist-statement">
+                <h2>Artist Statement</h2>
+                <div class="bio-content prose">
+                    {ArtistStatementContent ? <ArtistStatementContent /> : <p>Create a file at <code>src/content/press-kit/artist-statement.md</code> with your artist statement.</p>}
+                </div>
+                <button class="copy-btn" data-section="artist-statement">Copy to Clipboard</button>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="contact-section">
+                <h2>Socials</h2>
+                <div class="contact-info">
+                    <p><strong>Artist Instagram:</strong> <a href="https://www.instagram.com/milana_aernova/" target="_blank">@milana_aernova</a></p>
+                    <p><strong>Photography Instagram:</strong> <a href="https://www.instagram.com/eye.milana/" target="_blank">@eye.milana</a></p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    </BaseLayout>
+</body>
+</html>
+
+<style>
+    :root {
+        --primary-color: rgb(255, 68, 121);
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --card-bg: #f8f8f8;
+        --border-color: #e0e0e0;
+    }
+
+    :global(.dark) {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --card-bg: #1a1a1a;
+        --border-color: #333333;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .press-kit {
+        margin-top: 5rem;
+        padding: 3rem 0;
+        min-height: calc(100vh - 5rem);
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .page-title {
+        font-size: 3rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        color: var(--text-color);
+    }
+
+    section {
+        margin-bottom: 4rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 0.5rem;
+    }
+
+    /* Photo Section */
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .photo-card {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .press-photo {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4/5;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .press-photo:hover {
+        transform: scale(1.02);
+    }
+
+    .credit-line {
+        font-size: 0.9rem;
+        font-style: italic;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    /* Bio Sections */
+    .bio-content {
+        background-color: var(--card-bg);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    /* Prose styling for markdown content */
+    .prose :global(p) {
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .prose :global(p:last-child) {
+        margin-bottom: 0;
+    }
+
+    .prose :global(h1),
+    .prose :global(h2),
+    .prose :global(h3) {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+    }
+
+    .prose :global(h1) {
+        font-size: 2rem;
+    }
+
+    .prose :global(h2) {
+        font-size: 1.5rem;
+    }
+
+    .prose :global(h3) {
+        font-size: 1.25rem;
+    }
+
+    .prose :global(ul),
+    .prose :global(ol) {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .prose :global(li) {
+        margin-bottom: 0.5rem;
+    }
+
+    .prose :global(a) {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .prose :global(a:hover) {
+        opacity: 0.7;
+        text-decoration: underline;
+    }
+
+    .prose :global(strong) {
+        font-weight: 700;
+    }
+
+    .prose :global(em) {
+        font-style: italic;
+    }
+
+    .prose :global(code) {
+        background-color: var(--border-color);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.9em;
+    }
+
+    .prose :global(blockquote) {
+        border-left: 4px solid var(--primary-color);
+        padding-left: 1rem;
+        margin: 1rem 0;
+        font-style: italic;
+        opacity: 0.9;
+    }
+
+    /* Buttons */
+    .download-btn,
+    .copy-btn {
+        padding: 0.75rem 1.5rem;
+        background-color: var(--text-color);
+        color: var(--bg-color);
+        border: none;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .download-btn:hover,
+    .copy-btn:hover {
+        background-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 68, 121, 0.3);
+    }
+
+    .copy-btn {
+        display: block;
+        width: fit-content;
+    }
+
+    .copy-btn.copied {
+        background-color: #4caf50;
+    }
+
+    /* Contact Section */
+    .contact-info {
+        background-color: var(--card-bg);
+        padding: 2rem;
+        border-radius: 8px;
+    }
+
+    .contact-info p {
+        margin-bottom: 0.75rem;
+        font-size: 1.05rem;
+    }
+
+    .contact-info p:last-child {
+        margin-bottom: 0;
+    }
+
+    .contact-info a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .contact-info a:hover {
+        opacity: 0.7;
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+        .container {
+            padding: 0 1.5rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .photo-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bio-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    // Copy to clipboard functionality
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    
+    copyButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const sectionId = button.getAttribute('data-section');
+            const section = document.getElementById(sectionId);
+            const bioContent = section?.querySelector('.bio-content');
+            const text = bioContent?.textContent?.trim() || '';
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Failed to copy';
+                setTimeout(() => {
+                    button.textContent = 'Copy to Clipboard';
+                }, 2000);
+            }
+        });
+    });
+</script>

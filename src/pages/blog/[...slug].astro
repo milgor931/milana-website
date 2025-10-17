@@ -1,0 +1,271 @@
+---
+// pages/blog/[slug].astro
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+    const posts = await Astro.glob('../../content/blog/*.mdx');
+    
+    return posts.map(post => ({
+        params: { 
+            slug: post.file.split('/').pop()?.replace('.md', '') 
+        },
+        props: { post }
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = post;
+
+function formatDate(date: string) {
+    return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+---
+
+<BaseLayout title={`${post.frontmatter.title} - Milana Aernova`}>
+    <article class="blog-post">
+        <div class="container">
+            <header class="post-header">
+                <a href="/blog" class="back-link">← Back to Blog</a>
+                
+                <h1 class="post-title">{post.frontmatter.title}</h1>
+                
+                <div class="post-meta">
+                    {post.frontmatter.author && (
+                        <span class="author">By {post.frontmatter.author}</span>
+                    )}
+                    {post.frontmatter.date && (
+                        <time datetime={post.frontmatter.date}>
+                            {formatDate(post.frontmatter.date)}
+                        </time>
+                    )}
+                </div>
+
+                {post.frontmatter.tags && (
+                    <div class="post-tags">
+                        {post.frontmatter.tags.map((tag: string) => (
+                            <span class="tag">{tag}</span>
+                        ))}
+                    </div>
+                )}
+            </header>
+
+            {post.frontmatter.image && (
+                <div class="featured-image">
+                    <img src={post.frontmatter.image} alt={post.frontmatter.title} />
+                </div>
+            )}
+
+            <div class="post-content prose">
+                <Content />
+            </div>
+
+            <footer class="post-footer">
+                <a href="/blog" class="back-link-footer">← Back to Blog</a>
+            </footer>
+        </div>
+    </article>
+</BaseLayout>
+
+<style>
+    :root {
+        --primary-color: rgb(255, 68, 121);
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --card-bg: #f8f8f8;
+        --border-color: #e0e0e0;
+    }
+
+    :global(.dark) {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --card-bg: #1a1a1a;
+        --border-color: #333333;
+    }
+
+    .blog-post {
+        padding: 3rem 0;
+        min-height: calc(100vh - 5rem);
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .back-link,
+    .back-link-footer {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 2rem;
+        transition: opacity 0.3s ease;
+    }
+
+    .back-link:hover,
+    .back-link-footer:hover {
+        opacity: 0.7;
+    }
+
+    .post-header {
+        margin-bottom: 2rem;
+    }
+
+    .post-title {
+        font-family: "Italiana", sans-serif;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        color: var(--text-color);
+    }
+
+    .post-meta {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.95rem;
+        opacity: 0.7;
+        margin-bottom: 1rem;
+    }
+
+    .post-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.35rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .featured-image {
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .featured-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .post-content {
+        margin-bottom: 3rem;
+    }
+
+    .prose :global(p) {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    .prose :global(h2) {
+        font-family: "Italiana", sans-serif;
+        font-size: 2rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+    }
+
+    .prose :global(h3) {
+        font-family: "Italiana", sans-serif;
+        font-size: 1.5rem;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-color);
+    }
+
+    .prose :global(ul),
+    .prose :global(ol) {
+        margin-left: 2rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+    }
+
+    .prose :global(li) {
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .prose :global(a) {
+        color: var(--primary-color);
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.3s ease;
+    }
+
+    .prose :global(a:hover) {
+        border-bottom-color: var(--primary-color);
+    }
+
+    .prose :global(blockquote) {
+        border-left: 4px solid var(--primary-color);
+        padding-left: 1.5rem;
+        margin: 2rem 0;
+        font-style: italic;
+        font-size: 1.15rem;
+        opacity: 0.9;
+    }
+
+    .prose :global(code) {
+        background-color: var(--card-bg);
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.95em;
+    }
+
+    .prose :global(pre) {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
+
+    .prose :global(pre code) {
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .prose :global(img) {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 2rem 0;
+    }
+
+    .post-footer {
+        padding-top: 2rem;
+        border-top: 2px solid var(--border-color);
+    }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            padding: 0 1.5rem;
+        }
+
+        .post-title {
+            font-size: 1.75rem;
+        }
+
+        .prose :global(p),
+        .prose :global(li) {
+            font-size: 1rem;
+        }
+
+        .prose :global(h2) {
+            font-size: 1.5rem;
+        }
+    }
+</style>

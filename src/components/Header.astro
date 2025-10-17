@@ -1,0 +1,36 @@
+---
+import Navigation from './Navigation.astro';
+---
+<header>
+    <Navigation />
+</header>
+
+<style>
+
+   :root {
+        --nav-text-color: #000;
+        --nav-bg-color: rgb(255, 255, 255);
+        --hamburger-color: #ff0000;
+    }
+
+    :global(.dark) {
+        --nav-text-color: #fff;
+        --nav-bg-color: rgb(0, 0, 0);
+        --hamburger-color: #fff; /* Change this from #ff0000 to #fff */
+    }
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.3em;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+
+    border-bottom: 1px solid #888;
+    backdrop-filter: blur(10px)
+  }
+</style>

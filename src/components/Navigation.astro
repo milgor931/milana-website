@@ -1,0 +1,284 @@
+---
+import ThemeIcon from "./ThemeIcon.astro";
+---
+
+<header class="navbar">
+  <div class="logo">
+    <h1><a href="/">MILANA AERNOVA</a></h1>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-links" id="navbar">
+      <ul>
+        <li><a href="/projects">projects</a></li>
+        <li><a href="/workshops">workshops</a></li>
+        <li><a href="/press-kit">press kit</a></li>
+        <li><a href="/connect">connect</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-controls">
+      <ThemeIcon />
+      <div id="menu" class="hamburger">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="overlay" id="overlay"></div>
+</header>
+
+<style>
+/* --- Base Layout --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--nav-bg-color);
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5rem;
+  padding: 0 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.logo h1 {
+    padding: 0px;
+    margin: 0px;
+    line-height: 0;
+}
+
+.logo h1 a {
+  color: var(--nav-text-color);
+  font-family: sans-serif;
+  text-decoration: none;
+  font-weight: bolder;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+  padding: 0px;
+  margin: 0px;
+}
+
+/* --- Nav Container --- */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* --- Nav Links --- */
+.nav-links ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: var(--nav-text-color);
+  text-decoration: none;
+  font-family: "Italiana", "Lato", sans-serif;
+  font-weight: bolder;
+  transition: color 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.nav-links a:hover {
+  color: rgb(255, 68, 121);
+  font-weight: 400;
+}
+
+/* --- Nav Controls --- */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* --- Hamburger --- */
+.hamburger {
+  cursor: pointer;
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 28px;
+  height: 22px;
+  background: transparent;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.hamburger .line {
+  width: 100%;
+  height: 3px;
+  background-color: var(--nav-text-color);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger.active .line:nth-child(1) {
+  transform: rotate(45deg) translate(4px, 5px);
+}
+.hamburger.active .line:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active .line:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -7px);
+}
+
+/* --- Overlay --- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 999;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* --- Desktop --- */
+@media (min-width: 769px) {
+  .nav-links {
+    display: block;
+  }
+
+  .hamburger {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+    .nav-controls {
+        gap: 25px; /* Add spacing between theme icon and hamburger */
+        margin-right: 40px; /* Adjust right margin for visual balance */
+    }
+
+    /* Ensure icons don’t shrink or overlap */
+    .nav-controls > * {
+        flex-shrink: 0;
+    }
+}
+
+
+/* --- Mobile --- */
+@media (max-width: 1000px) {
+  .nav {
+    gap: 1rem;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 300px;
+    height: 100vh;
+    background-color: var(--nav-bg-color);
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 6rem;
+    padding-left: 2rem;
+    transition: right 0.3s ease;
+    z-index: 1001;
+  }
+
+  .nav-links.expanded {
+    right: 0;
+  }
+
+  .nav-links ul {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .nav-controls {
+    z-index: 1002;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  :global(body.menu-open) {
+    overflow: hidden;
+  }
+}
+</style>
+
+<script>
+const menuButton = document.getElementById("menu");
+const navbar = document.getElementById("navbar");
+const overlay = document.getElementById("overlay");
+const body = document.body;
+
+function toggleMenu() {
+  menuButton?.classList.toggle("active");
+  navbar?.classList.toggle("expanded");
+  overlay?.classList.toggle("active");
+  body.classList.toggle("menu-open");
+}
+
+function closeMenu() {
+  menuButton?.classList.remove("active");
+  navbar?.classList.remove("expanded");
+  overlay?.classList.remove("active");
+  body.classList.remove("menu-open");
+}
+
+menuButton?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleMenu();
+});
+
+overlay?.addEventListener("click", closeMenu);
+
+navbar?.addEventListener("click", (e) => {
+  const target = e.target;
+  if (target.tagName === "A") {
+    closeMenu();
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const target = e.target;
+  if (window.innerWidth <= 768) {
+    if (
+      menuButton &&
+      navbar &&
+      !menuButton.contains(target) &&
+      !navbar.contains(target) &&
+      navbar.classList.contains("expanded")
+    ) {
+      closeMenu();
+    }
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 768) {
+    closeMenu();
+  }
+});
+
+document.addEventListener("astro:page-load", closeMenu);
+</script>

@@ -1,0 +1,9 @@
+I am curious about the merging of digital and human sensibilities. In a world that seems to be moving faster and faster, how does being human fit in with technology and the natural world? What happens when technology and nature and humanity work together? What happens when we don't?
+
+My work lives at the intersection of performance, technology, and the body. As a movement artist, creative technologist, and interdisciplinary choreographer, I create immersive experiences that bridge the sensorial and the digital—where somatic intelligence, improvisation, and real-time media weave together into living systems of expression.
+
+Rooted in dance and somatic practices, my performances are often guided by improvisation and deep listening—to music, to sensation, and to space. I collaborate with machines not as tools, but as responsive partners. Using platforms like TouchDesigner, I design generative visuals that react to my movement in real time, creating a feedback loop between body, sound, and projected light. These environments are not static backdrops, but co-performers—fluid architectures that evolve with each gesture and breath.
+
+My work is driven by questions around embodiment, memory, quantum states of feeling, and the imperfect humanity that emerges through digital interfaces. I’m especially drawn to the tension between the mechanical and the organic, the controlled and the chaotic, the performed and the authentic. Through this, I aim to create spaces where audiences can feel something not just intellectually, but viscerally.
+
+Ultimately, I want my work to dissolve boundaries—between disciplines, between the internal and external, and between artist and viewer. I believe in art as an invitation: to feel more, to sense more, and to remember the strange, beautiful complexity of being alive.

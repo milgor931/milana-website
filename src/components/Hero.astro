@@ -1,0 +1,305 @@
+---
+import { fade } from "astro:transitions";
+
+import { Content as HeroContent } from "../content/hero.md";
+---
+
+<section class="hero">
+  <div id="hero-title" class="fade-in delay-1">Milana Aernova</div>
+
+  <!---
+  <div id="hero-text" class="typewriter-container">
+    <HeroContent />
+  </div>
+  --->
+
+  <!-- SVG filter definition -->
+<svg style="position:absolute; width:0; height:0;">
+  <defs>
+    <filter id="threshold">
+      <feColorMatrix in="SourceGraphic"
+        type="matrix"
+        values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 255 -140
+        " />
+    </filter>
+  </defs>
+</svg>
+
+<div id="morph-container">
+  <span id="text1" class="morph-text"></span>
+  <span id="text2" class="morph-text"></span>
+</div>
+</section>
+
+<style>
+  #morph-container {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    /* **the filter is applied here** */
+    filter: url(#threshold) blur(0.6px);
+  }
+  .morph-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    font-weight: bold;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 728px) {
+    .morph-text {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<script>
+  const elts = {
+    text1: document.getElementById("text1"),
+    text2: document.getElementById("text2"),
+  };
+
+  const texts = ["Creatrix", "Creative Technologist", "Producer", "Artist", "Curator", "Photographer", "Filmmaker"];
+  const morphTime = 5;    // seconds
+  const cooldownTime = 1; // seconds
+
+  let textIndex = texts.length - 1;
+  let morph = 0;
+  let cooldown = cooldownTime;
+  let lastTime = new Date();
+
+  elts.text1.textContent = texts[textIndex % texts.length];
+  elts.text2.textContent = texts[(textIndex + 1) % texts.length];
+
+  function doMorph() {
+    morph -= cooldown;
+    cooldown = 0;
+
+    let fraction = morph / morphTime;
+    if (fraction > 1) {
+      cooldown = cooldownTime;
+      fraction = 1;
+    }
+
+    setMorph(fraction);
+  }
+
+  function setMorph(fraction) {
+    // Blur and opacity manipulated
+    elts.text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    elts.text2.style.opacity = `${Math.pow(fraction, 0.4)}`;
+
+    fraction = 1 - fraction;
+
+    elts.text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    elts.text1.style.opacity = `${Math.pow(fraction, 0.4)}`;
+
+    elts.text1.textContent = texts[textIndex % texts.length];
+    elts.text2.textContent = texts[(textIndex + 1) % texts.length];
+  }
+
+  function doCooldown() {
+    morph = 0;
+    elts.text2.style.filter = "";
+    elts.text2.style.opacity = "1";
+    elts.text1.style.filter = "";
+    elts.text1.style.opacity = "0";
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    let newTime = new Date();
+    let dt = (newTime - lastTime) / 1000;
+    lastTime = newTime;
+
+    cooldown -= dt;
+    if (cooldown <= 0) {
+      morph += dt;
+      doMorph();
+    } else {
+      doCooldown();
+    }
+
+    // When morph is done, move to next text
+    if (cooldown > 0 && morph >= morphTime) {
+      textIndex++;
+    }
+  }
+
+  animate();
+</script>
+
+
+<script>
+  function createTypewriterEffectForContent(element, delay = 0) {
+    // Handle content that might have HTML elements
+    const walker = document.createTreeWalker(
+      element,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+    
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      if (node.nodeValue.trim()) {
+        textNodes.push(node);
+      }
+    }
+    
+    element.style.opacity = '1';
+    let totalDelay = delay;
+    let delayTime = 100;
+    
+    textNodes.forEach((textNode) => {
+      const text = textNode.nodeValue;
+      const parent = textNode.parentNode;
+      
+      // Remove the original text node
+      parent.removeChild(textNode);
+      
+      // Split text into words instead of characters
+      const words = text.split(' ').filter(word => word.length > 0);
+      
+      words.forEach((word, wordIndex) => {
+        // Create a wrapper span for each word to prevent line breaks within words
+        const wordSpan = document.createElement('span');
+        wordSpan.style.display = 'inline-block';
+        wordSpan.style.whiteSpace = 'nowrap';
+        
+        // Create spans for each character in the word
+        word.split('').forEach((char, charIndex) => {
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.classList.add('char');
+          span.style.opacity = '0';
+          span.style.transform = 'translateY(20px)';
+          span.style.display = 'inline-block';
+          wordSpan.appendChild(span);
+          
+          setTimeout(() => {
+            span.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+            span.style.opacity = '1';
+            span.style.transform = 'translateY(0)';
+          }, totalDelay + (charIndex * delayTime));
+        });
+        
+        parent.appendChild(wordSpan);
+        totalDelay += word.length * delayTime;
+        
+        // Add space after word (except for last word)
+        if (wordIndex < words.length - 1) {
+          const spaceSpan = document.createElement('span');
+          spaceSpan.textContent = '\u00A0';
+          spaceSpan.classList.add('char');
+          spaceSpan.style.opacity = '0';
+          spaceSpan.style.transform = 'translateY(20px)';
+          spaceSpan.style.display = 'inline-block';
+          parent.appendChild(spaceSpan);
+          
+          setTimeout(() => {
+            spaceSpan.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+            spaceSpan.style.opacity = '1';
+            spaceSpan.style.transform = 'translateY(0)';
+          }, totalDelay);
+          
+          totalDelay += delayTime; // Add delay for space
+        }
+      });
+    });
+  }
+
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const heroText = document.getElementById('hero-text');
+    
+    if (heroText) {
+      // Start hero text typewriter effect after 1.2s (after title fade-in completes)
+      createTypewriterEffectForContent(heroText, 1200);
+    }
+  });
+</script>
+
+<style>
+  .hero {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: "Quicksand", "Roboto Flex"
+  }
+
+  #hero-title {
+    font-size: 4rem;
+    font-weight: 400;
+    /* text-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); */
+    text-align: center;
+    margin-top: 0;
+    letter-spacing: 10px;
+  }
+
+  #hero-text {
+    font-size: 2rem;
+    max-width: 42ch;
+    font-weight: 200;
+    margin-top: 3em;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .hero h2 p {
+    /* text-align: left; */
+  }
+
+  /* Original fade animation for title */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-out forwards;
+  }
+
+  .delay-1 {
+    animation-delay: 0.2s;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Typewriter animation styles */
+  .typewriter-container {
+    opacity: 0; /* Initially hidden, will be shown by JS */
+  }
+
+  .char {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 728px) {
+    #hero-title {
+      font-size: 2.5rem;
+    }
+
+    .hero h2 {
+      margin-left: 0;
+    }
+
+    #hero-text p {
+      font-size: 5rem;
+    }
+  }
+</style>

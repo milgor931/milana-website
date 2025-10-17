@@ -1,0 +1,10 @@
+---
+const { id, title } = Astro.props;
+---
+<section id={id} data-title={title}>
+
+{(title) &&
+    <h2>{title}</h2>
+}
+
+</section>

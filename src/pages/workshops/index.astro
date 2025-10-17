@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+import WorkshopCard from '../../components/WorkshopCard.astro';
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+import TwoColumnSection from '../../components/TwoColumnSection.astro';
+
+const workshops = await getCollection('workshops');
+
+const sortedWorkshops = workshops.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  if (a.data.publishDate && b.data.publishDate) {
+    return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+  }
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const allTags = [...new Set(
+  workshops
+    .filter(w => w.data.tags && Array.isArray(w.data.tags))
+    .flatMap(w => w.data.tags)
+)].sort();
+---
+
+<ProjectLayout title="Workshops">
+  <main class="workshops-page">
+    <div class="container">
+      <h1 class="page-title">Workshops</h1>
+
+      <!---
+      <header class="page-header">
+        {allTags.length > 0 && (
+          <div class="tags-container">
+            <button class="tag active" data-tag="all">All</button>
+            {allTags.map((tag) => (
+              <button class="tag" data-tag={tag}>{tag}</button>
+            ))}
+          </div>
+        )}
+      </header>
+      --->
+
+      {workshops.length === 0 && (
+        <div class="empty-state">
+          <p>No workshops found. Check back soon!</p>
+        </div>
+      )}
+    </div>
+
+     <div class="workshops-list">
+        {sortedWorkshops.map((w, index) => (
+          <div class="workshop-item" data-tags={w.data.tags ? w.data.tags.join(',') : ''}>
+            <TwoColumnSection
+              title={w.data.title}
+              subtitle={w.data.subtitle}
+              description={w.data.description}
+              image={w.data.image}
+              imageAlt={w.data.title}
+              buttonText="Learn More"
+              buttonLink={`/workshops/${w.slug}`}
+              reverse={index % 2 === 1}
+            />
+          </div>
+        ))}
+      </div>
+  </main>
+</ProjectLayout>
+
+<style>
+  .workshops-page {
+     margin-top: 7rem;
+     min-height: calc(100vh - 7rem);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    letter-spacing: 4px;
+    font-weight: 400;
+    border-bottom: 1px dotted black;
+    font-size: 3em;
+  }
+
+  .workshops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+    font-size: 1.125rem;
+  }
+</style>
+
+<script is:inline>
+  function initializeTagFilter() {
+    const tagButtons = document.querySelectorAll('.tag');
+    const workshopItems = document.querySelectorAll('.workshop-item');
+
+    function filterByTag(selectedTag) {
+      tagButtons.forEach(btn => btn.classList.remove('active'));
+      const activeButton = Array.from(tagButtons).find(btn => btn.dataset.tag === selectedTag);
+      if (activeButton) activeButton.classList.add('active');
+
+      workshopItems.forEach(item => {
+        const tags = item.dataset.tags ? item.dataset.tags.split(',') : [];
+        if (selectedTag === 'all' || tags.includes(selectedTag)) {
+          item.classList.remove('hidden');
+          item.style.display = 'block';
+        } else {
+          item.classList.add('hidden');
+          item.style.display = 'none';
+        }
+      });
+
+      if (selectedTag === 'all') {
+        history.replaceState(null, '', window.location.pathname);
+      } else {
+        history.replaceState(null, '', `${window.location.pathname}#${encodeURIComponent(selectedTag)}`);
+      }
+    }
+
+    tagButtons.forEach(btn => {
+      btn.addEventListener('click', () => filterByTag(btn.dataset.tag));
+    });
+
+    function checkHashOnLoad() {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        const decodedTag = decodeURIComponent(hash);
+        const exists = Array.from(tagButtons).some(b => b.dataset.tag === decodedTag);
+        if (exists) return filterByTag(decodedTag);
+      }
+      filterByTag('all');
+    }
+
+    checkHashOnLoad();
+    window.addEventListener('hashchange', checkHashOnLoad);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTagFilter);
+  } else {
+    initializeTagFilter();
+  }
+</script>

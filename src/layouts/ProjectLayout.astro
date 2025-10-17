@@ -1,0 +1,165 @@
+---
+// ProjectLayout.astro - Complete layout with dynamic metadata
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import VideoBG from "../components/VideoBG.astro";
+import ScrollSpy from "../components/ScrollSpy.astro";
+import "../styles/global.css";
+
+// Define the props interface
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  keywords?: string;
+  type?: string;
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+// Get props with defaults
+const {
+  title,
+  description = "Interdisciplinary artists Memo Akten & Katie Peyton Hofstadter investigate consciousness, intelligence & planetary systems through research-based art bridging embodied experience with emerging technologies.",
+  image = "/images/superradiance-og-default.jpg",
+  imageAlt = "Superradiance Lab - Research-based art exploring consciousness and intelligence",
+  keywords = "consciousness, artificial intelligence, embodied cognition, research art, Memo Akten, Katie Peyton Hofstadter",
+  type = "article",
+  author = "Memo Akten & Katie Peyton Hofstadter",
+  publishedTime,
+  modifiedTime
+} = Astro.props;
+
+// Construct full URLs
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageURL = new URL(image, Astro.site);
+const fullTitle = `${title} | Superradiance Lab`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Basic Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content={author} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Superradiance Lab" />
+    <meta property="og:locale" content="en_US" />
+    
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    <meta property="article:author" content={author} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@memo_akten" />
+    <meta name="twitter:creator" content="@memo_akten" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+
+    <!-- Additional Social Platforms -->
+    <meta name="pinterest-media" content={imageURL} />
+    <meta name="pinterest-description" content={description} />
+
+    <!-- LinkedIn -->
+    <meta property="linkedin:title" content={fullTitle} />
+    <meta property="linkedin:description" content={description} />
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": type === "article" ? "Article" : "WebPage",
+      "headline": title,
+      "description": description,
+      "image": imageURL.toString(),
+      "url": canonicalURL.toString(),
+      "datePublished": publishedTime,
+      "dateModified": modifiedTime || publishedTime,
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Memo Akten",
+          "url": "https://memo.tv",
+          "sameAs": [
+            "https://x.com/memo_akten",
+            "https://instagram.com/memo_akten",
+            "https://bsky.app/profile/memoakten.bsky.social"
+          ]
+        },
+        {
+          "@type": "Person", 
+          "name": "Katie Peyton Hofstadter",
+          "url": "https://katiepeyton.com",
+          "sameAs": [
+            "https://x.com/katiehofstadter",
+            "https://instagram.com/katiepeytonhofstadter", 
+            "https://bsky.app/profile/katiepeyton.bsky.social"
+          ]
+        }
+      ],
+      "publisher": {
+        "@type": "Organization",
+        "name": "Superradiance Lab",
+        "url": "https://lab.superradiance.net",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://lab.superradiance.net/favicon.svg"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": canonicalURL.toString()
+      }
+    })} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer></script>
+
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <VideoBG videoId="1091030034" />
+    <Header />
+    <!-- <h1>{title}</h1> -->
+    <slot />
+    <Footer />
+    <ScrollSpy />
+    <!-- <script src="/scripts/script.js"></script> -->
+    <!-- <script src="/scripts/menu.js"></script> -->
+  </body>
+</html>

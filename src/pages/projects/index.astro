@@ -1,0 +1,229 @@
+---
+// src/pages/projects/index.astro
+import { getCollection } from 'astro:content';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectLayout from '../../layouts/ProjectLayout.astro'; // Adjust path to your ProjectLayout
+
+const projects = await getCollection('projects');
+console.log(projects.length)
+
+// Sort projects by date (newest first) or featured status
+const sortedProjects = projects.sort((a, b) => {
+  // Featured projects first
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  
+  // Then by date if available
+  if (a.data.publishDate && b.data.publishDate) {
+    return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+  }
+  
+  // Finally by title
+  return a.data.title.localeCompare(b.data.title);
+});
+
+// Extract all unique tags from projects
+const allTags = [...new Set(
+  projects
+    .filter(project => project.data.tags && Array.isArray(project.data.tags))
+    .flatMap(project => project.data.tags)
+)].sort();
+---
+
+<ProjectLayout title="Projects">
+  <main class="projects-page">
+    <div class="container">
+      <h1 class="page-title">Projects</h1>
+      <header class="page-header">
+        
+        {allTags.length > 0 && (
+          <div class="tags-container">
+            <button class="tag active" data-tag="all">All</button>
+            {allTags.map((tag) => (
+              <button class="tag" data-tag={tag}>{tag}</button>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="projects-grid">
+        {sortedProjects.map((project) => (
+          <div class="project-item" data-tags={project.data.tags ? project.data.tags.join(',') : ''}>
+            <ProjectCard
+              title={project.data.title}
+              subtitle={project.data.subtitle}
+              description={project.data.description}
+              image={project.data.image}
+              video={project.data.video}
+              slug={project.slug}
+              year={project.data.year}
+            />
+          </div>
+        ))}
+      </div>
+
+      {projects.length === 0 && (
+        <div class="empty-state">
+          <p>No projects found. Check back soon!</p>
+        </div>
+      )}
+    </div>
+  </main>
+</ProjectLayout>
+
+<style>
+  .projects-page {
+     margin-top: 5rem;
+     padding: 3rem 0;
+     min-height: calc(100vh - 5rem);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  
+  .project-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .project-item.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    margin-bottom: 2rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+    font-size: 1.125rem;
+  }
+
+  @media (max-width: 768px) {
+    .projects-page {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .page-description {
+      font-size: 1rem;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .container {
+      padding: 0 2rem;
+    }
+
+    .tags-container {
+      justify-content: center;
+    }
+
+    .tag {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tags-section h2 {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  function initializeTagFilter() {
+    const tagButtons = document.querySelectorAll('.tag');
+    const projectItems = document.querySelectorAll('.project-item');
+
+    function filterByTag(selectedTag) {
+      // Update active state
+      tagButtons.forEach(btn => btn.classList.remove('active'));
+      const activeButton = Array.from(tagButtons).find(btn => btn.dataset.tag === selectedTag);
+      if (activeButton) {
+        activeButton.classList.add('active');
+      }
+      
+      // Filter projects
+      projectItems.forEach(item => {
+        const projectTags = item.dataset.tags ? item.dataset.tags.split(',') : [];
+        
+        if (selectedTag === 'all' || projectTags.some(tag => tag.trim() === selectedTag)) {
+          item.classList.remove('hidden');
+          item.style.display = 'block';
+        } else {
+          item.classList.add('hidden');
+          item.style.display = 'none';
+        }
+      });
+
+      // Update URL hash
+      if (selectedTag === 'all') {
+        history.replaceState(null, '', window.location.pathname);
+      } else {
+        history.replaceState(null, '', `${window.location.pathname}#${encodeURIComponent(selectedTag)}`);
+      }
+    }
+
+    // Handle tag button clicks
+    tagButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const selectedTag = this.dataset.tag;
+        filterByTag(selectedTag);
+      });
+    });
+
+    // Check for hash on page load (when coming from project detail page)
+    function checkHashOnLoad() {
+      const hash = window.location.hash.slice(1); // Remove the # symbol
+      if (hash) {
+        const decodedTag = decodeURIComponent(hash);
+
+        // Check if this tag exists in our buttons
+        const tagExists = Array.from(tagButtons).some(btn => btn.dataset.tag === decodedTag);
+        if (tagExists) {
+          filterByTag(decodedTag);
+          return;
+        }
+      }
+      
+      // Default to "all" if no valid hash
+      filterByTag('all');
+    }
+
+    // Initialize filtering based on URL hash
+    checkHashOnLoad();
+
+    // Handle back/forward button navigation
+    window.addEventListener('hashchange', checkHashOnLoad);
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTagFilter);
+  } else {
+    initializeTagFilter();
+  }
+</script>
