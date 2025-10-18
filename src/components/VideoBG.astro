@@ -4,7 +4,7 @@ const { videoId } = Astro.props;
 
 <div id="video-background">
 <video 
-    src="/images/video.mp4"
+    src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     autoplay
     muted
     loop
@@ -41,11 +41,4 @@ html.dark #video-background video {
     filter: invert(0);
 }
 </style>
-
-<script>
-    const video = document.getElementById('bg-video');
-    if (video) {
-        video.play().catch(err => console.log('Video autoplay failed:', err));
-    }
-</script>
 
