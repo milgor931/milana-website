@@ -1,6 +1,17 @@
 ---
 const { videoId } = Astro.props;
 ---
+
+<div id="video-background">
+<video 
+    src="/images/video.mp4"
+    autoplay
+    muted
+    loop
+    playsinline
+></video>
+</div>
+
 <style>
 #video-background {
     position: fixed;
@@ -30,14 +41,4 @@ html.dark #video-background video {
 filter: invert(0);
 }
 </style>
-
-<div id="video-background">
-<video 
-    src="/images/video.mp4"
-    autoplay
-    muted
-    loop
-    playsinline
-></video>
-</div>
 
