@@ -9,67 +9,52 @@ html.dark {
     color: #fff;
 }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        line-height: 1.6;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .press-kit {
-        margin-top: 5rem;
-        padding: 3rem 0;
-        min-height: calc(100vh - 5rem);
-    }
-
-    .container {
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-
-    .page-title {
-        font-size: 3rem;
-        margin-bottom: 3rem;
-        text-align: center;
-        color: var(--text-color);
-    }
-
-    section {
-        margin: 4rem 0;
-    }
-
-    h2 {
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-        color: var(--text-color);
-        border-bottom: 2px solid var(--primary-color);
-        padding-bottom: 0.5rem;
-    }
-
-
-body {
-    margin: 0 auto;
-    width: 100%;
-    /* max-width: 80ch; */
-    /* padding: 5rem; */
-
-    font-family: "Quicksand", sans-serif;
-    font-weight: 100;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
-    font-size: 1.2rem;
+:root {
+    --bg-color: #fff;
+    --text-color: #000;
+    --primary-color: #ff4479;
 }
 
+html.dark {
+    --bg-color: #000;
+    --text-color: #fff;
+}
+
+
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.press-kit {
+    margin-top: 5rem;
+    padding: 3rem 0;
+    min-height: calc(100vh - 5rem);
+}
+
+.container {
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.page-title {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    color: var(--text-color);
+}
+
+section {
+    margin: 4rem 0;
+}
 
 h3 {
     margin: 0;
@@ -131,9 +116,9 @@ a:hover {
     gap: 0.5rem;
     justify-content: center;
     margin-top: 1.5rem;
-  }
+}
 
-  .tag {
+.tag {
     background: #a53e67ff;
     color: #ffffffff;
     padding: 0.25rem 0.75rem;
@@ -144,20 +129,20 @@ a:hover {
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
-  }
+}
 
-  .tag:hover {
+.tag:hover {
     background: #7b3354ff;
     transform: translateY(-1px);
-  }
+}
 
-  .tag.active {
+.tag.active {
     background-color: transparent;
     color: rgb(241, 103, 158);
     font-weight: bold;
-  }
+}
 
-  .container {
+.container {
     margin: 0 auto;
     padding: 0 2rem;
 }

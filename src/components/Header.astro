@@ -6,18 +6,18 @@ import Navigation from './Navigation.astro';
 </header>
 
 <style>
+  :root {
+      --nav-text-color: #000;
+      --nav-bg-color: rgb(255, 255, 255);
+      --hamburger-color: #ff0000;
+  }
 
-   :root {
-        --nav-text-color: #000;
-        --nav-bg-color: rgb(255, 255, 255);
-        --hamburger-color: #ff0000;
-    }
-
-    :global(.dark) {
-        --nav-text-color: #fff;
-        --nav-bg-color: rgb(0, 0, 0);
-        --hamburger-color: #fff; /* Change this from #ff0000 to #fff */
-    }
+  :global(.dark) {
+      --nav-text-color: #fff;
+      --nav-bg-color: rgb(0, 0, 0);
+      --hamburger-color: #fff; /* Change this from #ff0000 to #fff */
+  }
+  
   header {
     display: flex;
     justify-content: center;

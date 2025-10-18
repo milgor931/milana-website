@@ -5,7 +5,6 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import ProjectLayout from '../../layouts/ProjectLayout.astro'; // Adjust path to your ProjectLayout
 
 const projects = await getCollection('projects');
-console.log(projects.length)
 
 // Sort projects by date (newest first) or featured status
 const sortedProjects = projects.sort((a, b) => {

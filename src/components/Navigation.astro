@@ -30,8 +30,7 @@ import ThemeIcon from "./ThemeIcon.astro";
   <div class="overlay" id="overlay"></div>
 </header>
 
-<style>
-/* --- Base Layout --- */
+<style is:global>
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -65,14 +64,12 @@ import ThemeIcon from "./ThemeIcon.astro";
   margin: 0px;
 }
 
-/* --- Nav Container --- */
 .nav {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-/* --- Nav Links --- */
 .nav-links ul {
   display: flex;
   list-style: none;
@@ -95,14 +92,12 @@ import ThemeIcon from "./ThemeIcon.astro";
   font-weight: 400;
 }
 
-/* --- Nav Controls --- */
 .nav-controls {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* --- Hamburger --- */
 .hamburger {
   cursor: pointer;
   display: none;
@@ -134,7 +129,6 @@ import ThemeIcon from "./ThemeIcon.astro";
   transform: rotate(-45deg) translate(4px, -7px);
 }
 
-/* --- Overlay --- */
 .overlay {
   position: fixed;
   top: 0;
@@ -153,7 +147,6 @@ import ThemeIcon from "./ThemeIcon.astro";
   visibility: visible;
 }
 
-/* --- Desktop --- */
 @media (min-width: 769px) {
   .nav-links {
     display: block;
@@ -176,8 +169,6 @@ import ThemeIcon from "./ThemeIcon.astro";
     }
 }
 
-
-/* --- Mobile --- */
 @media (max-width: 1000px) {
   .nav {
     gap: 1rem;
