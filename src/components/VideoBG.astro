@@ -12,7 +12,7 @@ const { videoId } = Astro.props;
 ></video>
 </div>
 
-<style>
+<style is:global>
 #video-background {
     position: fixed;
     top: 0;
@@ -41,4 +41,11 @@ html.dark #video-background video {
     filter: invert(0);
 }
 </style>
+
+<script>
+    const video = document.getElementById('bg-video');
+    if (video) {
+        video.play().catch(err => console.log('Video autoplay failed:', err));
+    }
+</script>
 
