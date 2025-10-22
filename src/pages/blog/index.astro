@@ -26,7 +26,7 @@ function formatDate(date: string) {
     <main class="blog-index">
         <div class="container">
             <h1 class="page-title">Blog</h1>
-            <p class="subtitle">Thoughts on creative technology, movement, and the intersection of art and code.</p>
+            <p class="subtitle">Thoughts and reflections on my creative journey and research.</p>
 
             {posts.length === 0 ? (
                 <div class="empty-state">
@@ -47,13 +47,6 @@ function formatDate(date: string) {
                                         <time datetime={post.frontmatter.date}>
                                             {formatDate(post.frontmatter.date)}
                                         </time>
-                                        {post.frontmatter.tags && (
-                                            <div class="post-tags">
-                                                {post.frontmatter.tags.slice(0, 2).map((tag: string) => (
-                                                    <span class="tag">{tag}</span>
-                                                ))}
-                                            </div>
-                                        )}
                                     </div>
                                     <h2 class="post-title">{post.frontmatter.title}</h2>
                                     {post.frontmatter.description && (
@@ -89,6 +82,7 @@ function formatDate(date: string) {
     .blog-index {
         padding: 3rem 0;
         min-height: calc(100vh - 5rem);
+        margin-top: 5rem;
     }
 
     .container {
@@ -96,15 +90,6 @@ function formatDate(date: string) {
         margin: 0 auto;
         padding: 0 2rem;
     }
-
-    .page-title {
-        font-family: "Italiana", sans-serif;
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        text-align: center;
-        color: var(--text-color);
-    }
-
     .subtitle {
         text-align: center;
         font-size: 1.2rem;
