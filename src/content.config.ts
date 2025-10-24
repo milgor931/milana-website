@@ -43,7 +43,8 @@ const blogsCollection = defineCollection({
     publishDate: z.date().optional(),
     year: z.string(),
     featured: z.boolean().default(false),
-    tags: z.array(z.string()).optional()
+    tags: z.array(z.string()).optional(),
+    hidden: z.boolean().default(false)
   })
 });
 

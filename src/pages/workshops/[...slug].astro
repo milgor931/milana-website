@@ -153,6 +153,21 @@ console.log('Final values being passed to layout:', {
 </ProjectLayout>
 
 <style>
+
+:root {
+        --primary-color: rgb(255, 68, 121);
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --card-bg: #f8f8f8;
+        --border-color: #e0e0e0;
+    }
+
+    :global(.dark) {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --card-bg: #1a1a1a;
+        --border-color: #333333;
+    }
   .project-detail {
     padding: 2rem 0 4rem;
     min-height: 100vh;
@@ -179,7 +194,7 @@ console.log('Final values being passed to layout:', {
   }
 
   .back-link:hover {
-    color: #1e293b;
+    color: white;
   }
 
   .project-header {
@@ -293,6 +308,9 @@ console.log('Final values being passed to layout:', {
 
   .project-content {
     margin-bottom: 2rem;
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
   }
 
   @media (max-width: 768px) {

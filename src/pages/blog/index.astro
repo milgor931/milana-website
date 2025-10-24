@@ -6,7 +6,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const allPosts = await Astro.glob('../../content/blog/*.mdx');
 
 // Sort posts by date (newest first)
-const posts = allPosts.sort((a, b) => {
+const posts = allPosts.filter(p => !p.frontmatter.hidden).sort((a, b) => {
     const dateA = new Date(a.frontmatter.date || 0);
     const dateB = new Date(b.frontmatter.date || 0);
     return dateB.getTime() - dateA.getTime();
@@ -22,7 +22,7 @@ function formatDate(date: string) {
 }
 ---
 
-<BaseLayout title="Blog - Milana Aernova">
+<BaseLayout title="Blog | Milana Aernova">
     <main class="blog-index">
         <div class="container">
             <h1 class="page-title">Blog</h1>
@@ -30,7 +30,7 @@ function formatDate(date: string) {
 
             {posts.length === 0 ? (
                 <div class="empty-state">
-                    <p>No blog posts yet. Create your first post in <code>src/content/blog/</code></p>
+                    <p>No blog posts yet.</p>
                 </div>
             ) : (
                 <div class="posts-grid">
@@ -218,7 +218,6 @@ function formatDate(date: string) {
     }
 
     .post-title {
-        font-family: "Italiana", sans-serif;
         font-size: 1.5rem;
         margin-bottom: 0.75rem;
         line-height: 1.3;
