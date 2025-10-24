@@ -140,6 +140,19 @@ const allTags = [...new Set(
     }
   }
 
+  /* Fade-in animation styles */
+.project-item.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.project-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
   @media (max-width: 480px) {
     .projects-grid {
       grid-template-columns: 1fr;
@@ -225,4 +238,36 @@ const allTags = [...new Set(
   } else {
     initializeTagFilter();
   }
+
+  function initializeFadeInOnScroll() {
+  const items = document.querySelectorAll('.project-item');
+  
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // Animate only once
+      }
+    });
+  }, {
+    threshold: 0.1, // Trigger when 10% of the element is visible
+  });
+
+  items.forEach(item => {
+    item.classList.add('fade-in'); // Prepare initial state
+    observer.observe(item);
+  });
+}
+
+// Run both functions when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeTagFilter();
+    initializeFadeInOnScroll();
+  });
+} else {
+  initializeTagFilter();
+  initializeFadeInOnScroll();
+}
+
 </script>
