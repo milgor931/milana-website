@@ -3,43 +3,76 @@ const { videoId } = Astro.props;
 ---
 
 <div id="video-background">
-<video 
-    src="https://pub-59c214a33be94398ba879fa1a46bbed3.r2.dev/video.mp4"
+  <video 
+    id="bg-video"
+    src="https ://pub-59c214a33be94398ba879fa1a46bbed3.r2.dev/video.mp4"
     autoplay
     muted
     loop
     playsinline
     poster="/images/Screenshot 2025-10-21 214451.png"
-></video>
+  ></video>
 </div>
 
 <style is:global>
-#video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    z-index: -1;
-    transition: opacity 0.5s ease;
-}
 
-#video-background video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100vw;
-    height: 56.25vw; /* 16:9 aspect ratio */
-    min-height: 100vh;
-    min-width: 177.77vh; /* 16:9 aspect ratio */
-    transform: translate(-50%, -50%);
-    filter: invert(1);
-}
+    :root {
+        --primary-color: rgb(255, 68, 121);
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --card-bg: #f8f8f8;
+        --border-color: #e0e0e0;
+    }
 
-/* Only invert the video in dark mode */
-html.dark #video-background video {
-    filter: invert(0);
-}
+    :global(.dark) {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --card-bg: #1a1a1a;
+        --border-color: #333333;
+    }
+    #video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        z-index: -1;
+        background-color: var(--bg-color); /* fallback background color */
+        transition: opacity 0.5s ease;
+    }
+
+    #video-background video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 56.25vw; /* 16:9 aspect ratio */
+        min-height: 100vh;
+        min-width: 177.77vh; /* 16:9 aspect ratio */
+        transform: translate(-50%, -50%);
+        filter: invert(1);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+
+    /* Only invert the video in dark mode */
+    html.dark #video-background video {
+        filter: invert(0);
+    }
 </style>
 
+<script>
+  const video = document.getElementById('bg-video');
+
+  // When the video successfully loads and starts playing
+  video?.addEventListener('canplay', () => {
+    video.style.opacity = '1';
+  });
+
+  // If the video fails to load, keep the background color visible
+  video?.addEventListener('error', () => {
+    console.warn('Video failed to load.');
+    video.style.display = 'none';
+  });
+</script>
