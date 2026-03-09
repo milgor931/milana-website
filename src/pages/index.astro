@@ -20,12 +20,7 @@ const title = "Milana Aernova";
 
 // Sample data - replace with your actual data source
 const upcomingEvents = [
-  {
-    title: "Workshop: Interactive Dance Visuals with TouchDesigner",
-    date: "December 13, 2025",
-    description: "A hands-on workshop exploring innovative approaches to creating real time visuals in TouchDesigner.",
-    link: "#"
-  }
+
 ];
 
 // Get blog posts using Astro content collections
@@ -61,7 +56,8 @@ const recentBlogs = allBlogPosts
      
     <div class="md-content">     
       <!-- Upcoming Events Section -->
-      <Section id="events" title="Upcoming Events & Offerings" />
+       { upcomingEvents.length > 0 && <Section id="events" title="Upcoming Events & Offerings" />}
+      
       <div class="events-grid">
         {upcomingEvents.map((event) => (
           <div class="event-card">
